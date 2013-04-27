@@ -1,0 +1,14 @@
+<form class="form-inline" action="show">
+  <fieldset>
+    <legend>Password sharing</legend>
+    <% if params[:show] == 'yes' %>
+      <input id="password" name="password" type="text" readonly="readonly" onclick="this.select();" value="<%= @password %>" />
+      <span class="help-block">Your password</span>
+    <% else %>
+      <span class="help-block">Password will be showed only once, so keep it.</span>
+      <input type="hidden" id="show" name="show" value="yes">
+      <input type="hidden" id="key" name="key" value="<%= @key %>">
+      <button type="submit" class="btn btn-success btn-large">Show it to me</button>
+    <% end %>
+  </fieldset>
+</form>

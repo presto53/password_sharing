@@ -1,0 +1,8 @@
+<form class="form-inline" action="share" method="POST">
+  <fieldset>
+    <legend>Password sharing</legend>
+    <input id="password" name="password" type="text" /> <button type="submit" class="btn btn-success btn-large">Share</button>
+    <span class="help-block">Input your password here.</span>
+    <label class="checkbox"><input id="generate" name="generate" type="checkbox" onclick="document.getElementById('password').disabled=this.checked;" />Generate password for me, please.</label>
+  </fieldset>
+</form>
