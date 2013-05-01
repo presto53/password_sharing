@@ -1,7 +1,7 @@
 <form class="form-inline">
   <fieldset>
     <legend>Password sharing</legend>
-
+    <%= token_tag nil %>
     <% if params[:generate] == 'on' %>
       <input id="password" name="password" type="text" readonly="readonly" onclick="this.select();" value="<%= @password %>" />
       <span class="help-block">Your password</span>
