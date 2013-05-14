@@ -5,7 +5,7 @@ class Storage < ActiveRecord::Base
 
   def self.remove_old
     # Remove passwords older than month
-    Storage.where(:created_at < (Time.now-30.days)).destroy_all
+    Storage.where(["created_at < ?", Time.now-30.days]).destroy_all
   end
 
 end

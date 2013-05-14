@@ -1,1 +1,8 @@
 Password sharing project.
+
+Instalation:
+  git clone https://github.com/presto53/password_sharing.git
+  bundle install
+  RAILS_ENV=production bundle exec rake assets:precompile:all
+  RAILS_ENV=production bundle exec rake db:migrate
+  whenever  
