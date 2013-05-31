@@ -8,9 +8,23 @@ class PasswordSharingController < ApplicationController
   end
 
   def share
-    default_password_size = 16
+    if APP_CONFIG['default_password_size']
+      default_password_size = APP_CONFIG['default_password_size'].to_i
+    else
+      default_password_size = 16
+    end
+    type = []
     if params[:generate]
-      @password = generate_password(default_password_size)
+      if (1..255) === params[:password_length].to_i
+        password_size = params[:password_length].to_i
+      else
+        password_size = default_password_size
+      end
+      type << :uppercase if params[:uppercase]
+      type << :lowercase if params[:lowercase]
+      type << :numbers if params[:numbers]
+      type << :special if params[:special]
+      @password = generate_password(password_size, type)
     else
       @password = params[:password].to_s
     end
@@ -18,6 +32,7 @@ class PasswordSharingController < ApplicationController
     @key = generate_key
 
     if Storage.create(:password => @password, :key => @key).save
+      PasswordSender.send_email(:message => params[:message], :url => "#{request.protocol}#{request.host_with_port}/?k=#{@key}", :to => params[:email]).deliver if /^.+@.+\..+$/.match(params[:email]) and params[:email_checkbox]
       render :show_link
     else
       flash[:alert] = "Error: can't save password."
@@ -32,8 +47,7 @@ class PasswordSharingController < ApplicationController
         Storage.find_by_key(params[:key]).destroy
         render :show
       else
-        flash[:alert] = "Error: can't show password. Please, contact to system administrators."
-        redirect_to(action: 'index')
+        redirect_to "#{request.protocol}#{request.host_with_port}/error.html"
       end
     else
       redirect_to(action: 'index')
@@ -42,7 +56,7 @@ class PasswordSharingController < ApplicationController
 
   def generate_key
     key_size = 8
-    symbol_pool="0123456789abcdefghigklmnopqrstuvwxyz#{'abcdefghigklmnopqrstuvwxyz'.upcase!}".split('')
+    symbol_pool="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split('')
     key = get_random_string(symbol_pool, key_size)
     if Storage.find_by_key(key)
       key = generate_key
@@ -50,8 +64,16 @@ class PasswordSharingController < ApplicationController
     key
   end
 
-  def generate_password(password_size)
-    symbol_pool=",/.'!@#\$_-(){}[]*&?^%+=:;0123456789abcdefghigklmnopqrstuvwxyz#{'abcdefghigklmnopqrstuvwxyz'.upcase!}".split('')
+  def generate_password(password_size, type)
+    symbol_pool = []
+    symbol_pool << "ABCDEFGHIJKLMNOPQRSTUVWXYZ" if type.include?(:uppercase)
+    symbol_pool << "abcdefghigklmnopqrstuvwxyz" if type.include?(:lowercase)
+    symbol_pool << "0123456789" if type.include?(:numbers)
+    symbol_pool << ",/.'!@#\$_-(){}[]*&?^%+=:;" if type.include?(:special)
+    if symbol_pool.empty?
+      symbol_pool << ",/.'!@#\$_-(){}[]*&?^%+=:;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    end
+    symbol_pool = symbol_pool.join.split('')
     get_random_string(symbol_pool, password_size)
   end
 
