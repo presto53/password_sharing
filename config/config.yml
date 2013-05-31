@@ -1,0 +1,14 @@
+defaults: &defaults
+  default_password_size: 16
+  enable_email_form: no
+  email_from: "devnull@example.com"
+  logo: no
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

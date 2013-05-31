@@ -13,3 +13,25 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+
+function toggle_visibility(id)
+{
+    var e = document.getElementById(id);
+    if(e.style.display == 'none')
+        e.style.display = 'block';
+    else
+        e.style.display = 'none';
+}
+
+function reset_visibility(id)
+{
+    var e = document.getElementById(id);
+    e.style.display = 'none';
+}
+
+function limit_size(id)
+{
+    var e = document.getElementById(id);
+    if (e.value < 1 || e.value > 256)
+        e.value = 16;
+}

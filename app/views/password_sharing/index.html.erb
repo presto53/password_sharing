@@ -1,9 +1,32 @@
-<form class="form-inline" action="share" method="POST">
+<script>
+    window.onload = function() {
+        document.sharing.reset()
+    };
+</script>
+<form class="form-inline" name="sharing" action="share" method="POST">
   <fieldset>
     <legend>Password sharing</legend>
     <%= token_tag nil %>
     <input id="password" name="password" type="text" maxlength="255" /> <button type="submit" class="btn btn-success btn-large">Share</button>
     <span class="help-block">Input your password here.</span>
-    <label class="checkbox"><input id="generate" name="generate" type="checkbox" onclick="document.getElementById('password').disabled=this.checked;" />Generate password for me, please.</label>
+    <label class="checkbox">
+      <input id="generate" name="generate" type="checkbox" onclick="document.getElementById('password').disabled=this.checked; toggle_visibility('generate-block');" />Generate password for me, please.
+    </label>
+    <span class="generate-block" id="generate-block" style="display:none;">
+        <ul>
+          <li><label>Length: </label><input id="password_length" name="password_length" type="number" min="8" max="255" value="<%=APP_CONFIG['default_password_size']%>" step="1" oninput="limit_size('password_length');"/>
+          <li><label class="checkbox"><input id="uppercase" name="uppercase" type="checkbox" checked="checked"/>Uppercase letters (A-Z)</label>
+          <li><label class="checkbox"><input id="lowercase" name="lowercase" type="checkbox" checked="checked"/>Lowercase letters (a-z)</label>
+          <li><label class="checkbox"><input id="numbers" name="numbers" type="checkbox" checked="checked"/>Numbers (0-9)</label>
+          <li><label class="checkbox"><input id="special" name="special" type="checkbox"/>Special characters (#!$%^&*...)</label>
+        </ul>
+    </span>
+    <% if APP_CONFIG['enable_email_form'] %>
+        <br><label class="checkbox"><input id="email_checkbox" name="email_checkbox" type="checkbox" onclick="toggle_visibility('email-block');"/>Also, we can send link by e-mail.</label>
+        <span id="email-block" style="display:none;">
+          <br><label class="email"><input id="email" name="email" type="text"/><span class="help-block">Input e-mail address here.</span></label>
+          <br><label class="email"><textarea id="message" name="message" rows=5 ></textarea><span class="help-block">You can add your message.</span></label>
+        </span>
+     <% end %>
   </fieldset>
 </form>

@@ -14,3 +14,6 @@
 
 .flash-error { color: #ff0000 }
 .flash-notice { color: #00ff00 }
+#password_length { width: 40px }
+ul { list-style: none }
+
