@@ -9,6 +9,9 @@
     <% if !params[:email_checkbox] %>
         <input id="link" name="link" type="text" readonly="readonly" onclick="this.select();" value="<%= "#{request.protocol}#{request.host_with_port}/?k=#{@key}" %>" />
         <span class="help-block">Your link</span>
+    <% else %>
+        <p>Email was successfully sended.
     <% end %>
   </fieldset>
+
 </form>
